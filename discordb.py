@@ -318,7 +318,7 @@ class DiscordBackend(ErrBot):
 
     def change_presence(self, status, message):
         log.debug('Presence changed to %s and game "%s".' % (status, message))
-        self.client.change_presence(status=status, game=message)
+        asyncio.run_coroutine_threadsafe(self.client.change_presence(game=discord.Game(name=message)), loop=self.client.loop)
 
     def prefix_groupchat_reply(self, message, identifier):
         message.body = '@{0} {1}'.format(identifier.nick, message.body)
