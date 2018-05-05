@@ -320,6 +320,14 @@ class DiscordBackend(ErrBot):
         log.debug('Presence changed to %s and game "%s".' % (status, message))
         asyncio.run_coroutine_threadsafe(self.client.change_presence(game=discord.Game(name=message)), loop=self.client.loop)
 
+    def upload_file(self, msg, filename):
+        if msg.is_direct:
+            log.debug('Sending file to user')
+            asyncio.run_coroutine_threadsafe(self.client.send_file(DiscordPerson.from_user(msg.frm), filename), loop=self.client.loop)
+        else:
+            log.info('Sending file to channel')
+            asyncio.run_coroutine_threadsafe(self.client.send_file(msg.to.channel, filename), loop=self.client.loop)
+
     def prefix_groupchat_reply(self, message, identifier):
         message.body = '@{0} {1}'.format(identifier.nick, message.body)
 
